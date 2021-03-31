@@ -12,5 +12,5 @@ Currently only Java is supported. Additional languages will be added if requeste
 
 We take security seriously: This extension never sends out any code from the pages you visit, does not at all work for private repositories and is open source for anyone to review.
 
-Screenshot:
+### Screenshot
 ![goto.dev tooltip screenshot](screenshot.png)
