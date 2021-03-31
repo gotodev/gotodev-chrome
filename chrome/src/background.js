@@ -1,6 +1,6 @@
 chrome.runtime.setUninstallURL("https://goto.dev/", function () {});
 
-const endpoint = "https://api.goto.dev/resolve";
+const endpoint = "https://api.goto.dev/github";
 
 chrome.runtime.onMessage.addListener(
   function(msg, sender, sendResponse) {
