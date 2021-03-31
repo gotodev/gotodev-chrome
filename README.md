@@ -2,7 +2,7 @@
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mdcamhfkgghpkikjmenaehohapnkegja)](https://chrome.google.com/webstore/detail/gotodev/mdcamhfkgghpkikjmenaehohapnkegja)
 
-### This repository is a Google Chrome extension which:
+### This repository is a [Google Chrome extension](https://chrome.google.com/webstore/detail/gotodev/mdcamhfkgghpkikjmenaehohapnkegja) which:
 * 💡 Augments public pages on GitHub.com with helpful tooltips and go-to-definition links
 * 💪 Is uniquely able to understand dependencies even across many different repositories
 * ⚡ Works right out of the box: no messing with continuous integration settings!
