@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+  "name": "goto.dev",
+  "version": "2021.03.26",
+  "version_name": "2021.03.26",
+
+  "description": "Understand code 10x faster on GitHub 😉",
+  "author": "goto.dev",
+  "homepage_url": "https://goto.dev",
+  "icons": {
+    "16": "img/icon-16.png",
+    "48": "img/icon-48.png",
+    "128": "img/icon-128.png"
+  },
+
+  "background": {
+    "persistent": false,
+    "scripts": ["src/background.js"]
+  },
+
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": ["https://github.com/*"],
+      "js": ["src/inject.js"]
+    }
+  ]
+}
