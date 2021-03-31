@@ -1,6 +1,6 @@
-# goto.dev [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mdcamhfkgghpkikjmenaehohapnkegja)](https://chrome.google.com/webstore/detail/gotodev/mdcamhfkgghpkikjmenaehohapnkegja)
+# goto.dev - Understand code 10x faster on GitHub 😉
 
-## Understand code 10x faster on GitHub 😉
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mdcamhfkgghpkikjmenaehohapnkegja)](https://chrome.google.com/webstore/detail/gotodev/mdcamhfkgghpkikjmenaehohapnkegja)
 
 This repository consists of a Google Chrome extension which:
 * 💡 Augments public pages on GitHub.com with helpful tooltips and go-to-definition links
