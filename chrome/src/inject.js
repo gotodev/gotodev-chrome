@@ -294,6 +294,11 @@ function mouseOverHandler(e) {
     return;
   }
 
+  if (!side) {
+    // No data
+    return;
+  }
+
   for (const file of side) {
     if (!path || file.path == path) {
       for (const sym of file.refs) {
