@@ -1,6 +1,8 @@
 # goto.dev - Understand code 10x faster on GitHub 😉
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mdcamhfkgghpkikjmenaehohapnkegja)](https://chrome.google.com/webstore/detail/gotodev/mdcamhfkgghpkikjmenaehohapnkegja)
+[![License: MIT](https://img.shields.io/github/license/gotodev/gotodev-chrome)](./LICENSE)
+[![Twitter: @goto_dev](https://img.shields.io/twitter/follow/goto_dev)](https://twitter.com/goto_dev)
 
 ### This repository is a [Google Chrome extension](https://chrome.google.com/webstore/detail/gotodev/mdcamhfkgghpkikjmenaehohapnkegja) which:
 * 💡 Augments public pages on GitHub.com with helpful tooltips and go-to-definition links
