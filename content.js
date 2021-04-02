@@ -2,9 +2,8 @@
 
 // Global state
 let lastMsg = {};
-let hovercardElement = null;
-let lastTargetElement = null;
-let closingTimer = null;
+let counter = 0;
+let reply = null;
 
 // Hackish way to identify AJAX updates
 setInterval(
@@ -62,22 +61,26 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
     if (parent) {
       const a = document.createElement("a");
       a.setAttribute("data-gotodev-insertion", counter);
-      a.setAttribute("class", "gotodev js-skip-tagsearch"); /* `js-skip-tagsearch` prevents future semantic injection */
+      a.setAttribute("class", "gotodev-code js-skip-tagsearch"); /* `js-skip-tagsearch` prevents future semantic injection */
       a.href = url;
       parent.replaceChild(a, node);
       a.appendChild(node);
 
-      // Hovercard
-      a.addEventListener("mouseover", e => openHovercard(e, content == "" ? "Javadoc unavailable" : content));
-      a.addEventListener("mouseout", e => {
-        // Close the hovercard with a delay
-        const targetElement = lastTargetElement;
-        closingTimer = window.setTimeout(() => {
-          // Check if the current hovercard is still the one we wanted to close
-          if (targetElement === lastTargetElement) {
-            closeHovercard(e);
-          }
-        }, 100);
+      tippy(
+        a,
+        {
+          placement: "top-start",
+          theme: "gotodev",
+          appendTo: document.body, /* silences a warning about accessibility */
+          interactive: true,
+          allowHTML: true,
+          content: `
+<div class="px-3 pb-2">
+  <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
+
+  <p>${content}</p>
+  <button class="btn btn-sm btn-primary mr-2" type="button">Go to definition</button>
+</div>`,
       });
     }
 
@@ -107,9 +110,6 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
 
   return currentOffset;
 }
-
-let counter = 0;
-let reply = null;
 
 function fetchSymbols() {
   let matches;
@@ -320,118 +320,3 @@ function attachEventHandlers() {
     n.addEventListener("mouseover", mouseOverHandler);
   }
 }
-
-function closeHovercard(e) {
-  if (!lastTargetElement) {
-    return;
-  }
-
-  if (e instanceof MouseEvent && e.relatedTarget instanceof HTMLElement && e.relatedTarget.closest(".js-hovercard-content")) {
-    // Mouse entered the hovercard
-    return
-  }
-
-  resetHovercard();
-}
-
-function resetHovercard() {
-  hovercardElement.style.display = "none";
-  hovercardElement.children[0].innerHTML = "";
-  lastTargetElement = null;
-}
-
-function openHovercard(e, content) {
-  (async function() {
-    const targetElement = e.currentTarget;
-
-    resetHovercard();
-    lastTargetElement = targetElement;
-
-    const delay = new Promise(e => window.setTimeout(e, 250, 0)); // Delay the opening
-    let box = document.createElement("div");
-    box.innerHTML = `
-<div class="px-3 pb-2">
-  <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
-
-  <p>${content}</p>
-  <button class="btn btn-sm btn-primary mr-2" type="button">Go to definition</button>
-
-  <div class="sr-only">Press escape to close this hovercard</div>
-</div>`;
-    await delay
-
-    if (targetElement !== lastTargetElement) {
-      // The mouse moved away from the target element while waiting for the delay => hovercard no longer needed
-      return;
-    }
-
-    insertHovercard(box, () => hovercardPosition(targetElement, e.clientX));
-  })()
-}
-
-function hovercardPosition(targetElement, mouseX) {
-  const {width: t, height: n} = hovercardElement.getBoundingClientRect();
-  const {left: s, top: o, height: r, width: i} =
-    function() {
-      const t = targetElement.getClientRects();
-      let n = t[0];
-      for (const s of t)
-        if (s.left < mouseX && s.right > mouseX) {
-          n = s;
-          break
-        }
-      return n
-  }();
-  const a = o > n; // Meaning?
-  const b = window.innerWidth - s > t; // Meaning?
-  const c = s + i / 2;
-  return {
-      containerTop: a ? o - n - 12 : o + r + 12,
-      containerLeft: b ? c - 24 : c - t + 24,
-      contentClassSuffix: a ? b ? "bottom-left" : "bottom-right" : b ? "top-left" : "top-right"
-  }
-}
-
-function insertHovercard(content, getPosition) {
-  const root = hovercardElement.children[0];
-  root.innerHTML = "";
-  const container = document.createElement("div");
-  for (const child of content.children) {
-    container.appendChild(child);
-  }
-  root.appendChild(container);
-
-  hovercardElement.style.visibility = "hidden";
-  hovercardElement.style.display = "block";
-
-  const position = getPosition();
-
-  root.classList.remove("Popover-message--bottom-left", "Popover-message--bottom-right", "Popover-message--right-top", "Popover-message--right-bottom", "Popover-message--top-left", "Popover-message--top-right");
-  root.classList.add("Popover-message--" + position.contentClassSuffix);
-
-  hovercardElement.style.top = `${position.containerTop + window.pageYOffset}px`;
-  hovercardElement.style.left = `${position.containerLeft + window.pageXOffset}px`;
-  hovercardElement.style.zIndex = "100";
-  hovercardElement.style.display = "block";
-  hovercardElement.style.visibility = "";
-}
-
-document.addEventListener("DOMContentLoaded", (e) => {
-  hovercardElement = document.querySelector(".js-hovercard-content");
-  lastTargetElement = null;
-  closingTimer = null;
-
-  hovercardElement.addEventListener("mouseover", e => {
-    if (closingTimer) {
-      // Cancel the delayed hovercard closing
-      clearTimeout(closingTimer);
-      closingTimer = null;
-    }
-  });
-  hovercardElement.addEventListener("mouseleave", e => closeHovercard(e));
-  hovercardElement.addEventListener("keyup", e => {
-    if (e.key == "Escape") {
-      closeHovercard(e);
-    }
-  });
-});

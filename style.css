@@ -1,7 +1,23 @@
-.gotodev {
-    color: inherit;
+.gotodev-code {
+  color: inherit;
 }
 
-.gotodev:hover {
-    text-decoration: none;
+.gotodev-code:hover {
+  text-decoration: none;
+}
+
+.tippy-box[data-theme~='gotodev'] {
+  background-color: var(--color-bg-overlay);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 6px;
+  box-shadow: var(--color-shadow-large)!important;
+  color: inherit;
+}
+
+.tippy-box[data-theme~='gotodev'] > .tippy-content {
+  padding: 0;
+}
+
+.tippy-box[data-theme~='gotodev'] > .tippy-arrow {
+  color: var(--color-bg-overlay);
 }
