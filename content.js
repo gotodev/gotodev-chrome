@@ -62,7 +62,7 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
     if (parent) {
       const a = document.createElement("a");
       a.setAttribute("data-gotodev-insertion", counter);
-      a.setAttribute("class", "js-skip-tagsearch"); // Prevent future semantic injection
+      a.setAttribute("class", "gotodev js-skip-tagsearch"); /* `js-skip-tagsearch` prevents future semantic injection */
       a.href = url;
       parent.replaceChild(a, node);
       a.appendChild(node);

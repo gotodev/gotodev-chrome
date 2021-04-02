@@ -22,7 +22,8 @@
     {
       "run_at": "document_start",
       "matches": ["https://github.com/*"],
-      "js": ["inject.js"]
+      "js": ["content.js"],
+      "css": ["style.css"]
     }
   ]
 }
