@@ -354,7 +354,7 @@ function openHovercard(e, content) {
   <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
 
   <p>${content}</p>
-  <button class="btn btn-sm btn-primary mr-2" type="button">Go to definition</button><button class="btn btn-sm mr-2" type="button">More actions</button>
+  <button class="btn btn-sm btn-primary mr-2" type="button">Go to definition</button>
 
   <div class="sr-only">Press escape to close this hovercard</div>
 </div>`;
