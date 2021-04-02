@@ -15,14 +15,14 @@
 
   "background": {
     "persistent": false,
-    "scripts": ["src/background.js"]
+    "scripts": ["background.js"]
   },
 
   "content_scripts": [
     {
       "run_at": "document_start",
       "matches": ["https://github.com/*"],
-      "js": ["src/inject.js"]
+      "js": ["inject.js"]
     }
   ]
 }
