@@ -17,6 +17,12 @@ setInterval(
   200,
 );
 
+function escapeHTML(unsafeText) {
+  const e = document.createElement('div');
+  e.innerText = unsafeText;
+  return e.innerHTML;
+}
+
 function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, content, decl) {
   if (!node.hasChildNodes()) {
     if (node.nodeType !== Node.TEXT_NODE) {
@@ -78,12 +84,9 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
 <div class="px-3 pb-2">
   <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
 
-  <div class="f6 color-text-tertiary mb-1">
-    <a title="${decl.slug}" class="d-inline-block no-underline Link--secondary" href="/${decl.slug}">${decl.slug}</a>
-    on ${decl.refName}
-  </div>
+  <div class="f6 color-text-tertiary">${escapeHTML(decl.slug)} at ${escapeHTML(decl.refName)} on Apr 5, 2021</div>
 
-  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;"><code>${content}</code></pre>
+  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;"><code>${escapeHTML(content)}</code></pre>
 </div>`,
           onCreate: (t) => {
             t.popper.querySelectorAll('.gotodev-code').forEach((block) => {
