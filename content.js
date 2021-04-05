@@ -72,6 +72,9 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, decl) {
       parent.replaceChild(a, node);
       a.appendChild(node);
 
+      const thisRepository = decl.slug === reply.msg.slug && decl.refDate === "";
+      const thisCommit = thisRepository && reply.msg.paths.includes(decl.path);
+
       tippy(
         a,
         {
@@ -84,7 +87,14 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, decl) {
 <div class="px-3 pb-2">
   <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
 
-  <div class="f6 color-text-tertiary">${escapeHTML(decl.slug)} on ${escapeHTML(decl.refDate)}</div>
+  <div class="f6 color-text-tertiary">
+    ${thisRepository ?
+      (
+        thisCommit ? "Changed in this commit" : "This repository"
+      ) :
+      escapeHTML(decl.slug) + " on " + escapeHTML(decl.refDate)
+    }
+  </div>
 
   <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;"><code>${escapeHTML(decl.snippet)}</code></pre>
 </div>`,
@@ -232,12 +242,14 @@ function fetchSymbols() {
       return;
     }
 
+    console.log("[goto.dev] Reply: %o", result);
     console.log("[goto.dev] Resolved %d right files: %o", result.right.length, result.right);
     if (result.left) {
       console.log("[goto.dev] Resolved %d left files: %o", result.left.length, result.left);
     }
 
     reply = result;
+    reply.msg = msg;
   });
 
   return true;
