@@ -23,7 +23,7 @@ function escapeHTML(unsafeText) {
   return e.innerHTML;
 }
 
-function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, content, decl) {
+function injectUrl(counter, node, currentOffset, startOffset, endOffset, decl) {
   if (!node.hasChildNodes()) {
     if (node.nodeType !== Node.TEXT_NODE) {
       return currentOffset;
@@ -68,7 +68,7 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
       const a = document.createElement("a");
       a.setAttribute("data-gotodev-insertion", counter);
       a.setAttribute("class", "gotodev-code js-skip-tagsearch"); /* `js-skip-tagsearch` prevents future semantic injection */
-      a.href = url;
+      a.href = `https://github.com/${decl.slug}/blob/${decl.refName}/${decl.path}#L${decl.line}`;
       parent.replaceChild(a, node);
       a.appendChild(node);
 
@@ -84,9 +84,9 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
 <div class="px-3 pb-2">
   <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
 
-  <div class="f6 color-text-tertiary">${escapeHTML(decl.slug)} at ${escapeHTML(decl.refName)} on Apr 5, 2021</div>
+  <div class="f6 color-text-tertiary">${escapeHTML(decl.slug)} on ${escapeHTML(decl.refDate)}</div>
 
-  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;"><code>${escapeHTML(content)}</code></pre>
+  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;"><code>${escapeHTML(decl.snippet)}</code></pre>
 </div>`,
           onCreate: (t) => {
             t.popper.querySelectorAll('.gotodev-code').forEach((block) => {
@@ -117,7 +117,7 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
 
   // New injection
   for (const child of children) {
-    currentOffset = injectUrl(counter, child, currentOffset, startOffset, endOffset, url, content, decl);
+    currentOffset = injectUrl(counter, child, currentOffset, startOffset, endOffset, decl);
   }
 
   return currentOffset;
@@ -314,8 +314,20 @@ function mouseOverHandler(e) {
   for (const file of side) {
     if (!path || file.path == path) {
       for (const sym of file.refs) {
-        if (sym.startLine == line) {
-          injectUrl(counter, lineElement, 0, sym.startOffset, sym.endOffset, sym.url, sym.hovercard, sym.decl);
+        if (sym[0] == line) {
+          const startOffset = sym[1];
+          const endOffset = sym[2];
+          const declIDs = reply.decls[sym[3]];
+          const decl = {
+            slug: reply.slugs[declIDs[0]],
+            refName: reply.refNames[declIDs[1]],
+            refDate: reply.refDates[declIDs[2]],
+            path: reply.paths[declIDs[3]],
+            line: declIDs[4],
+            snippet: reply.snippets[declIDs[5]],
+            doc: reply.docs[declIDs[6]],
+          }
+          injectUrl(counter, lineElement, 0, startOffset, endOffset, decl);
         }
       }
     }
