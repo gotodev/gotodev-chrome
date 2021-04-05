@@ -17,7 +17,7 @@ setInterval(
   200,
 );
 
-function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, content) {
+function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, content, decl) {
   if (!node.hasChildNodes()) {
     if (node.nodeType !== Node.TEXT_NODE) {
       return currentOffset;
@@ -72,14 +72,18 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
           placement: "top-start",
           theme: "gotodev",
           appendTo: document.body, /* silences a warning about accessibility */
-          interactive: true,
           allowHTML: true,
+          maxWidth: 600,
           content: `
 <div class="px-3 pb-2">
   <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
 
-  <p>${content}</p>
-  <button class="btn btn-sm btn-primary mr-2" type="button">Go to definition</button>
+  <div class="f6 color-text-tertiary mb-1">
+    <a title="${decl.slug}" class="d-inline-block no-underline Link--secondary" href="/${decl.slug}">${decl.slug}</a>
+    on ${decl.refName}
+  </div>
+
+  <div class="blob-code-inner" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;">${content}</div>
 </div>`,
       });
     }
@@ -105,7 +109,7 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
 
   // New injection
   for (const child of children) {
-    currentOffset = injectUrl(counter, child, currentOffset, startOffset, endOffset, url, content);
+    currentOffset = injectUrl(counter, child, currentOffset, startOffset, endOffset, url, content, decl);
   }
 
   return currentOffset;
@@ -303,7 +307,7 @@ function mouseOverHandler(e) {
     if (!path || file.path == path) {
       for (const sym of file.refs) {
         if (sym.startLine == line) {
-          injectUrl(counter, lineElement, 0, sym.startOffset, sym.endOffset, sym.url, sym.hovercard);
+          injectUrl(counter, lineElement, 0, sym.startOffset, sym.endOffset, sym.url, sym.hovercard, sym.decl);
         }
       }
     }
