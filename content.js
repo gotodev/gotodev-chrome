@@ -19,7 +19,7 @@ setInterval(
 
 function escapeHTML(unsafeText) {
   const e = document.createElement('div');
-  e.innerText = unsafeText;
+  e.textContent = unsafeText;
   return e.innerHTML;
 }
 
