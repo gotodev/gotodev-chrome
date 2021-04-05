@@ -83,8 +83,13 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, url, co
     on ${decl.refName}
   </div>
 
-  <div class="blob-code-inner" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;">${content}</div>
+  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;"><code>${content}</code></pre>
 </div>`,
+          onCreate: (t) => {
+            t.popper.querySelectorAll('.gotodev-code').forEach((block) => {
+              Prism.highlightElement(block);
+            });
+          },
       });
     }
 

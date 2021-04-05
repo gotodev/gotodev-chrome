@@ -1,0 +1,20 @@
+.token.annotation {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.token.keyword {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.token.class-name,
+.token.function {
+  color: var(--color-prettylights-syntax-entity);
+}
+
+.token.number {
+  color: var(--color-prettylights-syntax-constant);
+}
+
+.token.string {
+  color: var(--color-prettylights-syntax-string);
+}

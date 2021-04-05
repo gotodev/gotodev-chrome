@@ -25,10 +25,12 @@
       "js": [
         "vendor/popper.v2.9.2.js",
         "vendor/tippy.umd.v6.3.1.js",
+        "vendor/prism.v1.23.0.js",
         "content.js"
       ],
       "css": [
         "vendor/tippy.v6.3.1.css",
+        "prism.css",
         "style.css"
       ]
     }
