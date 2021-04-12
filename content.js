@@ -330,14 +330,18 @@ function mouseOverHandler(e) {
           const startOffset = sym[1];
           const endOffset = sym[2];
           const declIDs = reply.decls[sym[3]];
-          const decl = {
-            slug: reply.slugs[declIDs[0]],
-            refName: reply.refNames[declIDs[1]],
-            refDate: reply.refDates[declIDs[2]],
-            path: reply.paths[declIDs[3]],
-            line: declIDs[4],
-            snippet: reply.snippets[declIDs[5]],
-            doc: reply.docs[declIDs[6]],
+
+          let decl = {
+            snippet: reply.snippets[declIDs[0]],
+            doc: reply.docs[declIDs[1]],
+          }
+
+          if (declIDs.length >= 7) {
+            decl.slug = reply.slugs[declIDs[2]];
+            decl.refName = reply.refNames[declIDs[3]];
+            decl.refDate = reply.refDates[declIDs[4]];
+            decl.path = reply.paths[declIDs[5]];
+            decl.line = declIDs[6];
           }
           injectUrl(counter, lineElement, 0, startOffset, endOffset, decl);
         }
