@@ -97,7 +97,7 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, decl) {
     }
   </div>
 
-  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow: hidden; text-overflow: ellipsis;"><code>${escapeHTML(decl.snippet)}</code></pre>
+  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow-wrap: normal; white-space: pre-line;"><code>${escapeHTML(decl.snippet)}</code></pre>
 </div>`,
           onCreate: (t) => {
             t.popper.querySelectorAll('.gotodev-code').forEach((block) => {
