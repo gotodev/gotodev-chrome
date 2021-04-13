@@ -81,6 +81,7 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, decl) {
           placement: "top-start",
           theme: "gotodev",
           appendTo: document.body, /* silences a warning about accessibility */
+          zIndex: 99999,
           allowHTML: true,
           maxWidth: 600,
           content: `
