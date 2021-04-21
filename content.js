@@ -100,7 +100,7 @@ function injectHovercard(node, decl) {
     const a = document.createElement("a");
     a.setAttribute("data-gotodev-insertion", counter);
     a.setAttribute("class", "gotodev-code js-skip-tagsearch"); /* `js-skip-tagsearch` prevents future semantic injection */
-    a.href = `https://github.com/${decl.slug}/blob/${decl.refName}/${decl.path}#L${decl.line}`;
+    //a.href = `https://github.com/${decl.slug}/blob/${decl.refName}/${decl.path}#L${decl.line}`;
     parent.replaceChild(a, node);
     a.appendChild(node);
 
