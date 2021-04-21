@@ -137,7 +137,7 @@ function injectHovercard(node, decl) {
 
             function injectStyle(offsets, cb) {
               if (offsets) {
-                for (let i = 0; i+1 < offsets.length; i++) {
+                for (let i = 0; i+1 < offsets.length; i += 2) {
                   inject(0, block, 0, offsets[i], offsets[i+1], node => {
                     let parent = node.parentNode;
                     if (parent) {
