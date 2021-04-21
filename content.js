@@ -117,23 +117,51 @@ function injectHovercard(node, decl) {
         allowHTML: true,
         maxWidth: 800,
         content: `
-  <div class="px-3 pb-2">
+<div class="px-3 pb-2">
   <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
 
   <div class="f6 color-text-tertiary">
-  ${thisRepository ?
-    (
-      thisCommit ? "Changed in this commit" : "This repository"
-    ) :
-    escapeHTML(decl.slug) + " on " + escapeHTML(decl.refDate)
-  }
+    ${thisRepository ?
+      (
+        thisCommit ? "Changed in this commit" : "This repository"
+      ) :
+      escapeHTML(decl.slug) + " on " + escapeHTML(decl.refDate)
+    }
   </div>
 
-  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow-wrap: normal; white-space: pre-wrap;"><code>${escapeHTML(decl.snippet)}</code></pre>
-  </div>`,
+  <pre class="blob-code-inner gotodev-snippet lang-java" style="line-height: 20px; vertical-align: top; overflow-wrap: normal; white-space: pre-wrap;"><code>${escapeHTML(decl.snippet.snippet)}</code></pre>
+</div>`,
         onCreate: (t) => {
-          t.popper.querySelectorAll('.gotodev-code').forEach((block) => {
+          t.popper.querySelectorAll('.gotodev-snippet').forEach((block) => {
             Prism.highlightElement(block);
+
+            function injectStyle(offsets, cb) {
+              if (offsets) {
+                for (let i = 0; i+1 < offsets.length; i++) {
+                  inject(0, block, 0, offsets[i], offsets[i+1], node => {
+                    let parent = node.parentNode;
+                    if (parent) {
+                      const e = cb();
+                      parent.replaceChild(e, node);
+                      e.appendChild(node);
+                    }
+                  });
+                }
+              }
+            };
+
+            injectStyle(decl.snippet.emphases, () => {
+              const e = document.createElement("span");
+              e.style.fontWeight = "bold";
+              e.style.background = "rgba(255, 179, 109, 0.3)";
+              return e;
+            });
+
+            injectStyle(decl.snippet.dims, () => {
+              const e = document.createElement("span");
+              e.style.opacity = 0.6;
+              return e;
+            });
           });
         },
     });
