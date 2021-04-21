@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "goto.dev",
-  "version": "2021.04.05",
-  "version_name": "2021.04.05",
+  "version": "2021.04.21",
+  "version_name": "2021.04.21",
 
   "description": "Understand code 10x faster on GitHub 😉",
   "author": "goto.dev",
