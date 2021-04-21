@@ -23,7 +23,9 @@ function escapeHTML(unsafeText) {
   return e.innerHTML;
 }
 
-function injectUrl(counter, node, currentOffset, startOffset, endOffset, decl) {
+// Runs the given callback function at the specified offsets within the node's text,
+// allowing the DOM to be altered.
+function inject(counter, node, currentOffset, startOffset, endOffset, cb) {
   if (!node.hasChildNodes()) {
     if (node.nodeType !== Node.TEXT_NODE) {
       return currentOffset;
@@ -53,59 +55,7 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, decl) {
       node.splitText(linkedLength);
     }
 
-    let parent = node.parentNode;
-    if (parent && parent.parentNode && parent.classList && parent.classList.contains("pl-token")) {
-      // Disable already injected semantic
-      const newParent = parent.cloneNode(false); // Does not copy programmatically injected event listeners
-      newParent.classList.remove("pl-token");
-      for (let i = 0; i < parent.childNodes.length; i++) {
-        newParent.appendChild(parent.childNodes[i]);
-      }
-      parent.parentNode.replaceChild(newParent, parent);
-      parent = newParent;
-    }
-    if (parent) {
-      const a = document.createElement("a");
-      a.setAttribute("data-gotodev-insertion", counter);
-      a.setAttribute("class", "gotodev-code js-skip-tagsearch"); /* `js-skip-tagsearch` prevents future semantic injection */
-      a.href = `https://github.com/${decl.slug}/blob/${decl.refName}/${decl.path}#L${decl.line}`;
-      parent.replaceChild(a, node);
-      a.appendChild(node);
-
-      const thisRepository = decl.slug === reply.msg.slug && decl.refDate === "";
-      const thisCommit = thisRepository && reply.msg.paths.includes(decl.path);
-
-      tippy(
-        a,
-        {
-          placement: "top-start",
-          theme: "gotodev",
-          appendTo: document.body, /* silences a warning about accessibility */
-          zIndex: 99999,
-          allowHTML: true,
-          maxWidth: 600,
-          content: `
-<div class="px-3 pb-2">
-  <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
-
-  <div class="f6 color-text-tertiary">
-    ${thisRepository ?
-      (
-        thisCommit ? "Changed in this commit" : "This repository"
-      ) :
-      escapeHTML(decl.slug) + " on " + escapeHTML(decl.refDate)
-    }
-  </div>
-
-  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow-wrap: normal; white-space: pre-line;"><code>${escapeHTML(decl.snippet)}</code></pre>
-</div>`,
-          onCreate: (t) => {
-            t.popper.querySelectorAll('.gotodev-code').forEach((block) => {
-              Prism.highlightElement(block);
-            });
-          },
-      });
-    }
+    cb(node);
 
     return newCurrentOffset;
   }
@@ -128,10 +78,66 @@ function injectUrl(counter, node, currentOffset, startOffset, endOffset, decl) {
 
   // New injection
   for (const child of children) {
-    currentOffset = injectUrl(counter, child, currentOffset, startOffset, endOffset, decl);
+    currentOffset = inject(counter, child, currentOffset, startOffset, endOffset, cb);
   }
 
   return currentOffset;
+}
+
+function injectHovercard(node, decl) {
+  let parent = node.parentNode;
+  if (parent && parent.parentNode && parent.classList && parent.classList.contains("pl-token")) {
+    // Disable already injected semantic
+    const newParent = parent.cloneNode(false); // Does not copy programmatically injected event listeners
+    newParent.classList.remove("pl-token");
+    for (let i = 0; i < parent.childNodes.length; i++) {
+      newParent.appendChild(parent.childNodes[i]);
+    }
+    parent.parentNode.replaceChild(newParent, parent);
+    parent = newParent;
+  }
+  if (parent) {
+    const a = document.createElement("a");
+    a.setAttribute("data-gotodev-insertion", counter);
+    a.setAttribute("class", "gotodev-code js-skip-tagsearch"); /* `js-skip-tagsearch` prevents future semantic injection */
+    a.href = `https://github.com/${decl.slug}/blob/${decl.refName}/${decl.path}#L${decl.line}`;
+    parent.replaceChild(a, node);
+    a.appendChild(node);
+
+    const thisRepository = decl.slug === reply.msg.slug && decl.refDate === "";
+    const thisCommit = thisRepository && reply.msg.paths.includes(decl.path);
+
+    tippy(
+      a,
+      {
+        placement: "top-start",
+        theme: "gotodev",
+        appendTo: document.body, /* silences a warning about accessibility */
+        zIndex: 99999,
+        allowHTML: true,
+        maxWidth: 800,
+        content: `
+  <div class="px-3 pb-2">
+  <span class="f6 lh-consended-ultra text-gray-light">Data provided by <a href="https://goto.dev" class="no-underline">goto.dev</a></span>
+
+  <div class="f6 color-text-tertiary">
+  ${thisRepository ?
+    (
+      thisCommit ? "Changed in this commit" : "This repository"
+    ) :
+    escapeHTML(decl.slug) + " on " + escapeHTML(decl.refDate)
+  }
+  </div>
+
+  <pre class="blob-code-inner gotodev-code lang-java" style="line-height: 20px; vertical-align: top; overflow-wrap: normal; white-space: pre-wrap;"><code>${escapeHTML(decl.snippet)}</code></pre>
+  </div>`,
+        onCreate: (t) => {
+          t.popper.querySelectorAll('.gotodev-code').forEach((block) => {
+            Prism.highlightElement(block);
+          });
+        },
+    });
+  }
 }
 
 function fetchSymbols() {
@@ -344,7 +350,7 @@ function mouseOverHandler(e) {
             decl.path = reply.paths[declIDs[5]];
             decl.line = declIDs[6];
           }
-          injectUrl(counter, lineElement, 0, startOffset, endOffset, decl);
+          inject(counter, lineElement, 0, startOffset, endOffset, node => injectHovercard(node, decl));
         }
       }
     }
