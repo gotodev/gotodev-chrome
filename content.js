@@ -127,7 +127,9 @@ function injectHovercard(node, decl) {
       (
         thisCommit ? "Changed in this commit" : "This repository"
       ) :
-      escapeHTML(decl.slug) + " on " + escapeHTML(decl.refDate)
+      (
+        decl.slug && decl.refDate ? escapeHTML(decl.slug) + " on " + escapeHTML(decl.refDate) : ""
+      )
     }
   </div>
 
