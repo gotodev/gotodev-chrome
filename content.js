@@ -4,18 +4,36 @@
 let lastMsg = {};
 let counter = 0;
 let reply = null;
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach(m => {
+    m.removedNodes.forEach(n => {
+      if (n.tagName == 'INCLUDE-FRAGMENT') {
+        onPageUpdated();
+      }
+    });
+  });
+});
 
-// Hackish way to identify AJAX updates
-setInterval(
-  function(){
-    if (!fetchSymbols()) {
-      // AJAX reload not ready, retry in a bit
-      return
-    }
-    attachEventHandlers();
-  },
-  200,
-);
+// Subscribe to page updates
+document.addEventListener("DOMContentLoaded", () => { onPageUpdated(); });
+document.addEventListener("pjax:end", () => { onPageUpdated(); });
+
+function onPageUpdated() {
+  for (const n of document.querySelectorAll(".js-diff-progressive-container > include-fragment")) {
+    observer.observe(n.parentNode, {childList: true});
+    return;
+  }
+
+  fetchSymbols();
+  attachEventHandlers();
+}
+
+function attachEventHandlers() {
+  for (const n of document.querySelectorAll(".js-file-line-container, .js-file-content")) {
+    n.setAttribute("data-gotodev-attached", true);
+    n.addEventListener("mouseover", mouseOverHandler);
+  }
+}
 
 function escapeHTML(unsafeText) {
   const e = document.createElement('div');
@@ -386,16 +404,5 @@ function mouseOverHandler(e) {
         }
       }
     }
-  }
-}
-
-function attachEventHandlers() {
-  for (const n of document.querySelectorAll(".js-file-line-container, .js-file-content")) {
-    if (n.getAttribute("data-gotodev-attached")) {
-      continue;
-    }
-
-    n.setAttribute("data-gotodev-attached", true);
-    n.addEventListener("mouseover", mouseOverHandler);
   }
 }
