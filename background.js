@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(
         method: "POST",
         cors: "no-cors",
         body: JSON.stringify(msg),
-        credentials: "omit",
+        credentials: "include",
       },
     )
     .then(async (response) => {
