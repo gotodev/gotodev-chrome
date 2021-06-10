@@ -1,5 +1,3 @@
-chrome.runtime.setUninstallURL("https://goto.dev/", function () {});
-
 const endpoint = "https://api.goto.dev/github";
 
 chrome.runtime.onMessage.addListener(
@@ -33,3 +31,14 @@ chrome.runtime.onMessage.addListener(
     return true;
   }
 );
+
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    chrome.tabs.create({
+      url: 'https://github.com/gotodev/gotodev-chrome/blob/main/demo/Demo.java',
+      active: true,
+    });
+
+    chrome.runtime.setUninstallURL('https://goto.dev/?byebye');
+  }
+});
