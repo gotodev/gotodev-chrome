@@ -1,7 +1,6 @@
 "use strict";
 
 // Global state
-let lastMsg = {};
 let counter = 0;
 let reply = null;
 const observer = new MutationObserver((mutations) => {
@@ -256,15 +255,6 @@ function fetchSymbols() {
       msg.paths.push(e.getAttribute("data-path"));
     }
   }
-
-  // TODO Hack to allow more paths to arrive onto the DOM as it loads
-  if (lastMsg.counter) {
-    msg.counter = lastMsg.counter;
-  }
-  if (JSON.stringify(lastMsg) === JSON.stringify(msg)) {
-    return false;
-  }
-  lastMsg = msg;
 
   let startTime = window.performance.now();
   counter++;
