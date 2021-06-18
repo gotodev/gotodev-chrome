@@ -202,7 +202,7 @@ function fetchSymbols() {
   let element;
   if ((element = document.querySelector(".js-permalink-shortcut")) && element.href) {
     url = element.href;
-  } else if ((element = document.querySelector(".toc-select > details-menu")) && element.getAttribute("src")) {
+  } else if ((element = document.querySelector("summary[data-hotkey=\'t\'] + details-menu")) && element.getAttribute("src")) {
     url = element.getAttribute("src");
   } else {
     return false;
