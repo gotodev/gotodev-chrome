@@ -191,12 +191,13 @@ function injectHovercard(node, decl) {
 
 function fetchSymbols() {
   let matches;
-  matches = window.location.href.match("^https://github\\.com/([^/#]+/[^/#]+)/(commit|tree|blob|blame|pull|commits)/([^#?]+)(?:[#?].*)?$")
+  matches = window.location.href.match("^https://github\\.com/+([^/#]+/[^/#]+)/+(commit|tree|blob|blame|pull|commits)/+([^#?]+)(?:[#?].*)?$")
   if (!matches || matches[2] === "commits") {
     // Unsupported page
     return true;
   }
-  const [, , kind, refNamePath] = matches
+  const [, , kind, refNamePathRaw] = matches
+  const refNamePath = refNamePathRaw.replace(/[/]{2,}/g, '/')
 
   let url;
   let element;
